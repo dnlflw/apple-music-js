@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import { devToolsEnhancer } from 'redux-devtools-extension';
 import viewReducer from './views/reducer';
@@ -15,8 +15,10 @@ const rootReducer = combineReducers({
 
 const store = createStore(
    rootReducer,
-   devToolsEnhancer(),
-   applyMiddleware(thunkMiddleware),
+   compose(
+      applyMiddleware(thunkMiddleware),
+      devToolsEnhancer()
+   )
 );
 
 export default store;

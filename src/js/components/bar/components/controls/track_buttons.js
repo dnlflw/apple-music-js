@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { resume, pause, nextSong, prevSong } from '../../../../audio/actions';
+import { constants } from '../../../../toolbox';
+
+const { color } = constants;
 
 const Container = styled.div`
    display: flex;
@@ -11,11 +14,37 @@ const Container = styled.div`
    margin-top: 16px;
 `;
 
-const Svg = styled.img`
-   height: 32px;
-   width: 32px;
+const IconButton = styled.button`
+   background: transparent;
+   border: none;
+   padding: 0;
    margin: 0 8px;
    cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+   transition: transform 0.1s ease;
+
+   &:hover {
+      transform: scale(1.1);
+      background-color: rgba(0,0,0,0.05);
+   }
+
+   &:active {
+      transform: scale(0.95);
+   }
+
+   &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px ${color.blue[4]};
+   }
+`;
+
+const Icon = styled.img`
+   height: 32px;
+   width: 32px;
+   display: block;
 `;
 
 const mapStateToProps = state => {
@@ -78,14 +107,22 @@ class TrackButtons extends Component {
 
       return (
          <Container>
-            <Svg src={`${path}/skip_back.svg`} onClick={this.prevSong} />
+            <IconButton onClick={this.prevSong} aria-label="Previous Song">
+               <Icon src={`${path}/skip_back.svg`} alt="" />
+            </IconButton>
             {!(!!hasAudio && !!isPlaying) && (
-               <Svg src={`${path}/play.svg`} onClick={this.resume} />
+               <IconButton onClick={this.resume} aria-label="Play">
+                  <Icon src={`${path}/play.svg`} alt="" />
+               </IconButton>
             )}
             {!!isPlaying && (
-               <Svg src={`${path}/pause.svg`} onClick={this.pause} />
+               <IconButton onClick={this.pause} aria-label="Pause">
+                  <Icon src={`${path}/pause.svg`} alt="" />
+               </IconButton>
             )}
-            <Svg src={`${path}/skip_next.svg`} onClick={this.nextSong} />
+            <IconButton onClick={this.nextSong} aria-label="Next Song">
+               <Icon src={`${path}/skip_next.svg`} alt="" />
+            </IconButton>
          </Container>
       );
    }

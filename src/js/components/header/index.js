@@ -27,7 +27,7 @@ const Container = styled.div`
    }
 `;
 
-const ChevronContainer = styled.div`
+const ChevronButton = styled.button`
    cursor: pointer;
    width: 40px;
    margin-left: -6px;
@@ -35,10 +35,21 @@ const ChevronContainer = styled.div`
    transform: ${props =>
       props.isShown ? 'scale(1) translateX(0)' : 'scale(0) translateX(20px)'};
    transition: all 0.3s;
+   background: transparent;
+   border: none;
+   padding: 0;
+   pointer-events: ${props => (props.isShown ? 'auto' : 'none')};
 
    &:active {
-      svg: {
-         color: ${props => props.isBackButton && color.redAlpha[2]};
+      svg {
+         color: ${color.redAlpha[2]};
+      }
+   }
+
+   &:focus {
+      outline: none;
+      svg {
+         filter: drop-shadow(0 0 2px ${color.red[4]});
       }
    }
 `;
@@ -84,6 +95,21 @@ const Title = styled.h1`
    transition: all 0.3s ease-in-out;
 `;
 
+const TitleButton = styled.button`
+   background: transparent;
+   border: none;
+   padding: 0;
+   margin: 0;
+   font-family: inherit;
+   text-align: left;
+   cursor: pointer;
+
+   &:focus {
+      outline: 2px solid ${color.blue[4]};
+      outline-offset: 2px;
+   }
+`;
+
 const mapStateToProps = state => {
    return {
       viewState: state.viewState,
@@ -111,9 +137,20 @@ const TitleStack = connect(mapStateToProps)(({ stack, exiting, onClick }) => {
                exiting={exiting}
                isTitle={isTitle}>
                {!props.hideTitle && (
-                  <Title onClick={() => (isBackButton ? onClick() : null)}>
-                     {title || name}
-                  </Title>
+                  isBackButton ? (
+                     <TitleButton
+                        onClick={onClick}
+                        aria-label={`Go back to ${title || name}`}
+                     >
+                        <Title as="span">
+                           {title || name}
+                        </Title>
+                     </TitleButton>
+                  ) : (
+                     <Title>
+                        {title || name}
+                     </Title>
+                  )
                )}
             </TitleContainer>
          )
@@ -129,14 +166,18 @@ const BackButton = connect(
    const showChevron = stack.length > 1;
 
    return (
-      <ChevronContainer isShown={showChevron}>
+      <ChevronButton
+         isShown={showChevron}
+         onClick={showChevron ? popView : null}
+         aria-label="Go back"
+         tabIndex={showChevron ? 0 : -1}
+      >
          <Icon
             name="chevron-left"
             size={38}
             color={color.red[4]}
-            onClick={showChevron ? popView : null}
          />
-      </ChevronContainer>
+      </ChevronButton>
    );
 });
 
