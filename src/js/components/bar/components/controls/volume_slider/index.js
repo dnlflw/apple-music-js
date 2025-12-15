@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { findDOMNode } from 'react-dom';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import Slider from 'react-rangeslider';
@@ -67,6 +68,14 @@ const mapDispatchToProps = dispatch => {
 };
 
 class VolumeSlider extends Component {
+   componentDidMount() {
+      // eslint-disable-next-line react/no-find-dom-node
+      const node = findDOMNode(this.slider);
+      if (node) {
+         node.setAttribute('aria-label', 'Volume Control');
+      }
+   }
+
    handleChange = val => {
       this.props.changeVolume(val / 100);
    };
@@ -78,6 +87,7 @@ class VolumeSlider extends Component {
       return (
          <Container>
             <Slider
+               ref={slider => (this.slider = slider)}
                className="volume-slider"
                tooltip={false}
                value={volume * 100}
