@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled, { css } from 'styled-components';
 import { connect } from 'react-redux';
 import { updateTime } from '../../../../audio/actions';
@@ -102,7 +102,9 @@ export function formatTime(seconds = 0, guide = seconds) {
 
 const mapStateToProps = state => {
    return {
-      audioState: state.audioState,
+      // optimization: only select time to avoid unnecessary re-renders
+      // when other parts of audioState change (e.g. volume)
+      time: state.audioState.time,
    };
 };
 
@@ -112,7 +114,7 @@ const mapDispatchToProps = dispatch => {
    };
 };
 
-class Scrubber extends Component {
+class Scrubber extends PureComponent {
    state = {
       isChanging: false,
       time: {
@@ -122,8 +124,7 @@ class Scrubber extends Component {
    };
 
    startChange = () => {
-      const { audioState } = this.props;
-      const { time } = audioState;
+      const { time } = this.props;
 
       this.setState({
          isChanging: true,
@@ -163,9 +164,8 @@ class Scrubber extends Component {
    componentDidUpdate() {}
 
    render() {
-      const { audioState } = this.props;
+      const { time: propTime } = this.props;
       const { isChanging, transitioning } = this.state;
-      const propTime = audioState.time;
       const stateTime = this.state.time;
       const time = isChanging || transitioning ? stateTime : propTime;
       const range = Math.round(time.current / time.max * 100);
