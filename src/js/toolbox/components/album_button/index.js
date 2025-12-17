@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 import LazyLoad from 'react-lazy-load';
 import constants from '../../constants';
@@ -72,7 +72,7 @@ const SubLabel = styled.h4`
    user-select: none;
 `;
 
-class AlbumButton extends Component {
+class AlbumButton extends PureComponent {
    state = {
       loaded: false,
    };
@@ -81,12 +81,17 @@ class AlbumButton extends Component {
       this.setState({ loaded: true });
    };
 
+   handleClick = () => {
+      const { onClick, label, sublabel } = this.props;
+      onClick({ album: label, artist: sublabel });
+   }
+
    render() {
-      const { label, sublabel, artwork, onClick } = this.props;
+      const { label, sublabel, artwork } = this.props;
       const { loaded } = this.state;
 
       return (
-         <Container onClick={onClick}>
+         <Container onClick={this.handleClick}>
             <ImgContainer>
                <Placeholder
                   src="images/default_artwork.svg"

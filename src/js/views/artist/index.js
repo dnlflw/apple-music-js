@@ -59,7 +59,7 @@ class ArtistView extends Component {
                            label={album}
                            sublabel={artist}
                            artwork={url}
-                           onClick={() => this.viewAlbum({ artist, album })}
+                           onClick={this.viewAlbum}
                         />
                      );
                   })}
