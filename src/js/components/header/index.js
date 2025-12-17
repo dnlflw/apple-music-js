@@ -122,7 +122,7 @@ const mapDispatchToProps = dispatch => {
    };
 };
 
-const TitleStack = connect(mapStateToProps)(({ stack, exiting, onClick }) => {
+const TitleStack = React.memo(({ stack, exiting, onClick }) => {
    return stack.map(({ name, title, props }, index) => {
       const isHidden = index < stack.length - 2;
       const isBackButton = index === stack.length - 2;
@@ -158,13 +158,7 @@ const TitleStack = connect(mapStateToProps)(({ stack, exiting, onClick }) => {
    });
 });
 
-const BackButton = connect(
-   mapStateToProps,
-   mapDispatchToProps,
-)(({ viewState, popView }) => {
-   const { stack } = viewState;
-   const showChevron = stack.length > 1;
-
+const BackButton = ({ showChevron, popView }) => {
    return (
       <ChevronButton
          isShown={showChevron}
@@ -179,7 +173,7 @@ const BackButton = connect(
          />
       </ChevronButton>
    );
-});
+};
 
 class Header extends Component {
    constructor(props) {
@@ -226,16 +220,18 @@ class Header extends Component {
 
    render() {
       const { stack, exiting } = this.state;
+      const { viewState, popView } = this.props;
       const currentView = stack[stack.length - 1];
       const { hideTitle } = currentView.props;
+      const showChevron = viewState.stack.length > 1;
 
       return (
          <Container hideTitle={hideTitle && !exiting}>
-            <BackButton />
+            <BackButton showChevron={showChevron} popView={popView} />
             <TitleStack
                stack={stack}
                exiting={exiting}
-               onClick={this.props.popView}
+               onClick={popView}
             />
          </Container>
       );
