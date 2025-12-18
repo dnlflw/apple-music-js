@@ -20,8 +20,7 @@ const ButtonContainer = styled.div`
 
 const mapStateToProps = state => {
    return {
-      viewState: state.viewState,
-      apiState: state.apiState,
+      albums: state.apiState.data.albums,
    };
 };
 
@@ -46,17 +45,15 @@ class AlbumListView extends Component {
    }
 
    componentDidMount() {
-      const { apiState } = this.props;
-      const { albums } = apiState.data;
+      const { albums, fetchAlbums } = this.props;
 
-      if (albums.length === 0) {
-         this.props.fetchAlbums();
+      if (!albums || albums.length === 0) {
+         fetchAlbums();
       }
    }
 
    render() {
-      const { apiState } = this.props;
-      const { albums } = apiState.data;
+      const { albums } = this.props;
 
       return (
          <Container>
