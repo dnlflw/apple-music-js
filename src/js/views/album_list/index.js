@@ -20,8 +20,12 @@ const ButtonContainer = styled.div`
 
 const mapStateToProps = state => {
    return {
-      viewState: state.viewState,
-      apiState: state.apiState,
+      // ⚡ PERFORMANCE OPTIMIZATION:
+      // Previously, we selected { viewState, apiState }, causing re-renders whenever
+      // ANY part of apiState changed (e.g. playlists, artists) or viewState changed.
+      // Now we only select 'albums', ensuring this component only re-renders when
+      // the album list actually changes.
+      albums: state.apiState.data.albums,
    };
 };
 
@@ -32,7 +36,7 @@ const mapDispatchToProps = dispatch => {
    };
 };
 
-class AlbumListView extends Component {
+export class AlbumListView extends Component {
    viewAlbum = ({ artist, album }) => {
       this.props.pushView({
          name: 'Album',
@@ -46,17 +50,16 @@ class AlbumListView extends Component {
    }
 
    componentDidMount() {
-      const { apiState } = this.props;
-      const { albums } = apiState.data;
+      const { albums, fetchAlbums } = this.props;
 
-      if (albums.length === 0) {
-         this.props.fetchAlbums();
+      // Ensure we have data, but avoid infinite loops or redundant calls
+      if (!albums || albums.length === 0) {
+         fetchAlbums();
       }
    }
 
    render() {
-      const { apiState } = this.props;
-      const { albums } = apiState.data;
+      const { albums } = this.props;
 
       return (
          <Container>
