@@ -94,10 +94,37 @@ const ButtonContainer = styled.div`
    padding-right: 16px;
 `;
 
-const Svg = styled.img`
+const IconButton = styled.button`
+   background: transparent;
+   border: none;
+   padding: 0;
+   margin: 0 8px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+   transition: transform 0.1s ease;
+
+   &:hover {
+      transform: scale(1.1);
+      background-color: rgba(0,0,0,0.05);
+   }
+
+   &:active {
+      transform: scale(0.95);
+   }
+
+   &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px ${color.blue[4]};
+   }
+`;
+
+const Icon = styled.img`
    height: 24px;
    width: 24px;
-   margin: 0 8px;
+   display: block;
 `;
 
 const mapStateToProps = state => {
@@ -190,12 +217,18 @@ class MiniControls extends Component {
                <SongTitle>{track.name}</SongTitle>
                <ButtonContainer size={32}>
                   {!(hasAudio && isPlaying) && (
-                     <Svg src={`${path}/play.svg`} onClick={this.resume} />
+                     <IconButton onClick={this.resume} aria-label="Play">
+                        <Icon src={`${path}/play.svg`} alt="" />
+                     </IconButton>
                   )}
                   {isPlaying && (
-                     <Svg src={`${path}/pause.svg`} onClick={this.pause} />
+                     <IconButton onClick={this.pause} aria-label="Pause">
+                        <Icon src={`${path}/pause.svg`} alt="" />
+                     </IconButton>
                   )}
-                  <Svg src={`${path}/skip_next.svg`} onClick={this.nextSong} />
+                  <IconButton onClick={this.nextSong} aria-label="Next song">
+                     <Icon src={`${path}/skip_next.svg`} alt="" />
+                  </IconButton>
                </ButtonContainer>
             </InfoContainer>
          </Container>
