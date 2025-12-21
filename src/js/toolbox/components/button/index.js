@@ -50,12 +50,23 @@ const SubLabel = styled.h4`
    margin: 0;
 `;
 
-const OptionsContainer = styled.div`
+const OptionsContainer = styled.button.attrs({ type: 'button' })`
    height: 3em;
    width: 3em;
    display: flex;
    justify-content: center;
    align-items: center;
+   background: transparent;
+   border: none;
+   padding: 0;
+   cursor: pointer;
+   font-family: inherit;
+
+   &:focus {
+      outline: none;
+      box-shadow: inset 0 0 0 2px ${color.blue[4]};
+      border-radius: 4px;
+   }
 `;
 
 const ChevronContainer = styled.div`
@@ -96,7 +107,7 @@ const Button = ({
             <SubLabel>{sublabel}</SubLabel>
          </TextContainer>
          {OptionsMenu && (
-            <OptionsContainer onClick={handleOptionsClick}>
+            <OptionsContainer onClick={handleOptionsClick} aria-label="More options">
                <Icon name="more-horizontal" />
             </OptionsContainer>
          )}
