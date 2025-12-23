@@ -23,13 +23,14 @@ class ArtistListView extends Component {
    }
 
    componentDidMount() {
-      if (!this.props.apiState.data.artists.length) {
+      const { artists } = this.props;
+      if (!artists || !artists.length) {
          this.props.fetchArtists();
       }
    }
 
    render() {
-      const { artists } = this.props.apiState.data;
+      const { artists = [] } = this.props;
 
       return (
          <Container>
@@ -51,8 +52,7 @@ class ArtistListView extends Component {
 
 const mapStateToProps = state => {
    return {
-      viewState: state.viewState,
-      apiState: state.apiState,
+      artists: state.apiState.data.artists,
    };
 };
 
