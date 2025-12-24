@@ -11,22 +11,7 @@ const Container = styled.div`
 
 const ButtonContainer = styled.div``;
 
-const mapStateToProps = state => {
-   return {
-      viewState: state.viewState,
-      apiState: state.apiState,
-   };
-};
-
-const mapDispatchToProps = dispatch => {
-   return {
-      pushView: view => dispatch(pushView(view)),
-      pushPopup: popup => dispatch(pushPopup(popup)),
-      fetchPlaylists: () => dispatch(fetchPlaylists()),
-   };
-};
-
-class PlaylistListView extends Component {
+export class PlaylistListView extends Component {
    viewPlaylist = ({ playlist, index }) => {
       this.props.pushView({
          name: 'Playlist',
@@ -47,13 +32,18 @@ class PlaylistListView extends Component {
    };
 
    componentDidMount() {
-      this.props.fetchPlaylists();
+      const { playlists } = this.props;
+      // ⚡ OPTIMIZATION: Only fetch if we don't have playlists yet
+      if (!playlists || Object.keys(playlists).length === 0) {
+         this.props.fetchPlaylists();
+      }
    }
 
    getPlaylistButtons = () => {
-      const playlists = localStorage.appleMusicPlaylists
-         ? JSON.parse(localStorage.appleMusicPlaylists)
-         : {};
+      // ⚡ OPTIMIZATION: Use props from Redux instead of localStorage.
+      // This avoids JSON.parse() on every render (significant perf win)
+      // and ensures we render consistent state.
+      const { playlists = {} } = this.props;
       const playlistButtons = [];
 
       for (let [key, playlist] of Object.entries(playlists)) {
@@ -87,5 +77,21 @@ class PlaylistListView extends Component {
       );
    }
 }
+
+const mapStateToProps = state => {
+   // ⚡ OPTIMIZATION: Select only playlists to prevent re-renders when other api data changes
+   // (e.g. albums/artists loading). Previously subscribed to entire state.
+   return {
+      playlists: state.apiState.data && state.apiState.data.playlists,
+   };
+};
+
+const mapDispatchToProps = dispatch => {
+   return {
+      pushView: view => dispatch(pushView(view)),
+      pushPopup: popup => dispatch(pushPopup(popup)),
+      fetchPlaylists: () => dispatch(fetchPlaylists()),
+   };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PlaylistListView);
