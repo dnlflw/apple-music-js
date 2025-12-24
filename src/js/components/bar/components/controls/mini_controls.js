@@ -94,10 +94,37 @@ const ButtonContainer = styled.div`
    padding-right: 16px;
 `;
 
+const ControlButton = styled.button`
+   background: transparent;
+   border: none;
+   padding: 0;
+   margin: 0 8px;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+   transition: transform 0.1s ease;
+
+   &:hover {
+      transform: scale(1.1);
+      background-color: rgba(0,0,0,0.05);
+   }
+
+   &:active {
+      transform: scale(0.95);
+   }
+
+   &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px ${color.blue[4]};
+   }
+`;
+
 const Svg = styled.img`
    height: 24px;
    width: 24px;
-   margin: 0 8px;
+   display: block;
 `;
 
 const mapStateToProps = state => {
@@ -190,12 +217,30 @@ class MiniControls extends Component {
                <SongTitle>{track.name}</SongTitle>
                <ButtonContainer size={32}>
                   {!(hasAudio && isPlaying) && (
-                     <Svg src={`${path}/play.svg`} onClick={this.resume} />
+                     <ControlButton
+                        onClick={this.resume}
+                        aria-label="Play"
+                        title="Play"
+                     >
+                        <Svg src={`${path}/play.svg`} alt="" />
+                     </ControlButton>
                   )}
                   {isPlaying && (
-                     <Svg src={`${path}/pause.svg`} onClick={this.pause} />
+                     <ControlButton
+                        onClick={this.pause}
+                        aria-label="Pause"
+                        title="Pause"
+                     >
+                        <Svg src={`${path}/pause.svg`} alt="" />
+                     </ControlButton>
                   )}
-                  <Svg src={`${path}/skip_next.svg`} onClick={this.nextSong} />
+                  <ControlButton
+                     onClick={this.nextSong}
+                     aria-label="Next Song"
+                     title="Next Song"
+                  >
+                     <Svg src={`${path}/skip_next.svg`} alt="" />
+                  </ControlButton>
                </ButtonContainer>
             </InfoContainer>
          </Container>
